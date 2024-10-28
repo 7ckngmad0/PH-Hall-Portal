@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>QR Code Generator</title>
+</head>
+<body>
+    <div class="container">
+        <p>Enter your username and password</p>
+        <input type="text" placeholder="Username" id="username">
+        <input type="password" placeholder="Password" id="password">
+        <p>Enter additional text or URL</p>
+        <input type="text" placeholder="Text or URL" id="qrText">
+
+        <div id="imgBox">
+            <img src="" id="qrImage">
+        </div>
+        <button onclick="qrGeneration()"> 【 】 Generate </button>
+    </div>
+
+    <!-- Include CryptoJS and QR Code Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/crypto-js@3.1.9-1/crypto-js.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+        let imgBox = document.getElementById("imgBox");
+        let qrImage = document.getElementById("qrImage");
+        let username = document.getElementById("username");
+        let password = document.getElementById("password");
+        let qrText = document.getElementById("qrText");
+
+        function qrGeneration() {
+            if(username.value.length > 0 && password.value.length > 0) {
+                // Secret key for encryption (in practice, store securely)
+                const secretKey = "your-very-secure-secret-key";
+
+                // Prepare data for encryption
+                const data = {
+                    username: username.value,
+                    password: password.value,
+                    additionalText: qrText.value
+                };
+
+                // Encrypt the data
+                const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(data), secretKey).toString();
+
+                // Generate QR code with encrypted data
+                qrImage.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(encryptedData);
+                imgBox.classList.add("show-img");
+
+            } else {
+                alert("Please enter both username and password.");
+            }
+        }
+    </script>
+</body>
+</html>
